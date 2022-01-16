@@ -62,12 +62,12 @@ class Account < ApplicationRecord
   MENTION_RE    = /(?<=^|[^\/[:word:]])@((#{USERNAME_RE})(?:@[[:word:]\.\-]+[[:word:]]+)?)/i
   URL_PREFIX_RE = /\Ahttp(s?):\/\/[^\/]+/
 
+  include Attachmentable
   include AccountAssociations
   include AccountAvatar
   include AccountFinderConcern
   include AccountHeader
   include AccountInteractions
-  include Attachmentable
   include Paginable
   include AccountCounters
   include DomainNormalizable
@@ -129,6 +129,8 @@ class Account < ApplicationRecord
            :unconfirmed_email,
            :current_sign_in_ip,
            :current_sign_in_at,
+           :created_at,
+           :sign_up_ip,
            :confirmed?,
            :approved?,
            :pending?,
@@ -147,7 +149,7 @@ class Account < ApplicationRecord
 
   delegate :chosen_languages, to: :user, prefix: false, allow_nil: true
 
-  update_index('accounts#account', :self)
+  update_index('accounts', :self)
 
   def local?
     domain.nil?
